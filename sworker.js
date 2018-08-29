@@ -60,7 +60,7 @@ self.addEventListener('install', function(event) {
       caches.match(event.request).then(function(resp) {
         return resp || fetch(event.request).then(function(response) {
           let responseClone = response.clone();
-          caches.open('restCACHE').then(function(cache) {
+          caches.open(restCACHE).then(function(cache) {
             cache.put(event.request, responseClone);
           });
   

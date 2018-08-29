@@ -168,7 +168,7 @@ createRestaurantHTML = (restaurant) => {
   image.src=DBHelper.imageUrlForRestaurant(restaurant);
   let imgpath = DBHelper.imageUrlForRestaurant(restaurant).split('/');
   var msrc=imgpath[3].charAt(0);
-  image.srcset='images/img/'+msrc+'-800x2.jpg 350w';
+ /* image.srcset='images/img/'+msrc+'-800x2.jpg 350w';*/
   
   li.appendChild(image);
  
