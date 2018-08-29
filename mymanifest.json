@@ -1,0 +1,9 @@
+{
+  "name": "Restaurant Review",
+  "short_name": "RReview",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#fff",
+  "description": "A simply Restaurant Review app."
+  
+}

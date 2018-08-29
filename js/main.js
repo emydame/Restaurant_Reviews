@@ -4,20 +4,7 @@ let restaurants,
 var newMap
 var markers = []
 
-/**
- * register service worker
- */
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('/sworker.js').then(function(registration) {
-      // Registration was successful
-      console.log('ServiceWorker registration successful with scope: ', registration.scope);
-    }, function(err) {
-      // registration failed :(
-      console.log('ServiceWorker registration failed: ', err);
-    });
-  });
-}
+
 
 
 /**
@@ -173,13 +160,18 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
  */
 createRestaurantHTML = (restaurant) => {
   const li = document.createElement('li');
-
+  const picture = document.createElement('picture');
   const image = document.createElement('img');
+  const source = document.createElement('source');
   image.className = 'restaurant-img';
   image.alt= restaurant.name;
-  image.src = DBHelper.imageUrlForRestaurant(restaurant);
-  li.append(image);
-
+  image.src=DBHelper.imageUrlForRestaurant(restaurant);
+  let imgpath = DBHelper.imageUrlForRestaurant(restaurant).split('/');
+  var msrc=imgpath[3].charAt(0);
+  image.srcset='images/img/'+msrc+'-800x2.jpg 350w';
+  
+  li.appendChild(image);
+ 
   const name = document.createElement('h1');
   name.innerHTML = restaurant.name;
   li.append(name);
