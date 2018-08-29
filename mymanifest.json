@@ -1,9 +1,18 @@
 {
   "name": "Restaurant Review",
   "short_name": "RReview",
-  "start_url": ".",
+  "start_url": "/index.html",
   "display": "standalone",
   "background_color": "#fff",
-  "description": "A simply Restaurant Review app."
+  "description": "A simply Restaurant Review app.",
+  "icons":[
+      {
+        "src":"/images/ricon.png",
+        "type":"image/png",
+        "sizes":""
+      }
+
+  ],
+  "theme_color":"#3f9e61"
   
 }
