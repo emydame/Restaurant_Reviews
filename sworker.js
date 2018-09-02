@@ -17,6 +17,7 @@ const urlsToCache = [
   'https://unpkg.com/leaflet@1.3.1/dist/leaflet.css',
   'https://unpkg.com/leaflet@1.3.1/dist/leaflet.js',
   
+  
   /* Cashing font face */
   'https://fonts.googleapis.com/css?family=Lato:400,700'
 ];

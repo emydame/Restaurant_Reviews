@@ -1,16 +1,18 @@
 <!DOCTYPE html>
-<html lang="utf-8">
+<html lang="en">
 
 <head>
+    <meta charset="utf-8">
+    <meta name="description" content="Home Page" />
   <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
-  <link rel="canonical" href="http:8000/index.html">
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ==" crossorigin=""/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" charset="utf-8">
-  <meta name="theme-color" content="#fff"/>
   
-  <link rel="manifest" href="/manifest.json">
-  <title>Restaurant Reviews</title>
+  <link rel="stylesheet" href="css/styles.css">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0" charset="utf-8">
+  <meta name="theme-color" content="#fff"/>
+  <link  rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ==" crossorigin=""/>
+    <link rel="manifest" href="/manifest.json">
+  <title>Restaurant Reviews</title>#
+  
 </head>
 
 <body>
@@ -27,21 +29,26 @@
     <section>
       <div class="filter-options">
         <h2>Filter Results</h2>
+        <label for='neighborhoods-select'>
         <select id="neighborhoods-select" name="neighborhoods" tabindex="0" onchange="updateRestaurants()">
           <option value="all">All Neighborhoods</option>
         </select>
+      </label>
+      <label for='cuisines-select'>
         <select id="cuisines-select" name="cuisines" tabindex="0"  onchange="updateRestaurants()">
           <option value="all">All Cuisines</option>
         </select>
+      </label>
       </div>
       <ul id="restaurants-list"></ul>
+
     </section>
   </main>
   <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js" integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw==" crossorigin=""></script>
   <script charset="utf-8" src="/index.js"></script>
   <script type="application/javascript" charset="utf-8" src="js/dbhelper.js"></script>
   <script type="application/javascript" charset="utf-8" src="js/main.js"></script>
-  <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.4/leaflet.js"></script>
   <!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&libraries=places&callback=initMap"></script> -->
 
 
