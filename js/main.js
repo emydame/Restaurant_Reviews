@@ -170,6 +170,8 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
  */
 createRestaurantHTML = (restaurant) => {
   const li = document.createElement('li');
+  li.setAttribute("role","treeitem");
+  li.setAttribute("aria-expanded","true");
   const picture = document.createElement('picture');
   const image = document.createElement('img');
   const source = document.createElement('source');

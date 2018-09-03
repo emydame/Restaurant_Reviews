@@ -15,11 +15,8 @@ const urlsToCache = [
   '../js/restaurant_info.js',
   /* Caching map assets */
   'https://unpkg.com/leaflet@1.3.1/dist/leaflet.css',
-  'https://unpkg.com/leaflet@1.3.1/dist/leaflet.js',
-  
-  
-  /* Cashing font face */
-  'https://fonts.googleapis.com/css?family=Lato:400,700'
+  'https://unpkg.com/leaflet@1.3.1/dist/leaflet.js' 
+
 ];
 
 self.addEventListener('install', function(event) {
@@ -52,19 +49,22 @@ self.addEventListener('install', function(event) {
         );
       })
     );
+    return self.clients.claim();
   });
 
   
 
   self.addEventListener('fetch', function(event) {
     event.respondWith(
+      
       caches.match(event.request).then(function(resp) {
         return resp || fetch(event.request).then(function(response) {
           let responseClone = response.clone();
           caches.open(restCACHE).then(function(cache) {
+            responseClone['Cache-Control']  = 'public, max-age=315360000';
             cache.put(event.request, responseClone);
           });
-  
+          
           return response;
         });
       })
