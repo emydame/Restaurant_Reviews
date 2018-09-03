@@ -1,10 +1,14 @@
 /**
  * serviceworker.js for restaurant review 
+ * Implementation of service worker was guided from udacity instructor video
+ * cache-age values obtained from "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control"
  */
 
 const restCACHE = "restaurant-cache-v1";
 const urlsToCache = [
   '/',  // include the root
+
+  /* Caching static assets */
   '/index.html',
   '/manifest.json',
   '/restaurant.html',
@@ -15,12 +19,12 @@ const urlsToCache = [
   '../js/restaurant_info.js',
   /* Caching map assets */
   'https://unpkg.com/leaflet@1.3.1/dist/leaflet.css',
-  'https://unpkg.com/leaflet@1.3.1/dist/leaflet.js' 
+  'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.4/leaflet.js' 
 
 ];
 
 self.addEventListener('install', function(event) {
-    // Perform install steps
+   
     event.waitUntil(
       caches.open(restCACHE)
         .then(function(cache) {
@@ -33,6 +37,9 @@ self.addEventListener('install', function(event) {
         })
     );
   });
+
+   /* check if existing cache contains the newly created cache. If
+   it does, delete old cache, activate and give control to it */
 
   self.addEventListener('activate', function(event) {
     event.waitUntil(
@@ -61,7 +68,7 @@ self.addEventListener('install', function(event) {
         return resp || fetch(event.request).then(function(response) {
           let responseClone = response.clone();
           caches.open(restCACHE).then(function(cache) {
-            responseClone['Cache-Control']  = 'public, max-age=315360000';
+            responseClone['Cache-Control']  = 'public, max-age=31536000';
             cache.put(event.request, responseClone);
           });
           

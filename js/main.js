@@ -91,7 +91,7 @@ initMap = () => {
     mapboxToken: 'pk.eyJ1IjoiZW1teWRhbWUiLCJhIjoiY2psMTBoejVjMTZtazNwbTZncnRoeWt4aCJ9.VzhZqdTlh6mtGbQUCy0iQw',
     maxZoom: 18,
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
-      '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+      '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>,tabindex="-1" ' +
       'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
     id: 'mapbox.streets',
     alt:''
@@ -179,8 +179,8 @@ createRestaurantHTML = (restaurant) => {
   image.alt= restaurant.name;
   image.src=DBHelper.imageUrlForRestaurant(restaurant);
   let imgpath = DBHelper.imageUrlForRestaurant(restaurant).split('/');
-  /* var msrc=imgpath[3].charAt(0);
- image.srcset='images/img/'+msrc+'-800x2.jpg 350w';*/
+  var msrc=imgpath[3].charAt(0);
+ image.srcset='/images/'+msrc+'-50pc_large.jpg 900w';
   
   li.appendChild(image);
  

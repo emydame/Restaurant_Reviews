@@ -24,10 +24,10 @@
 
   <main id="maincontent">
     <section id="map-container">
-      <div id="map"></div>
+      <div id="map" role="application" aria-label="Map with location to restaurants"></div>
     </section>
     <section>
-      <div class="filter-options">
+      <div class="filter-options" tabindex="0">
         <h2>Filter Results</h2>
         <label for='neighborhoods-select'>
         <select id="neighborhoods-select" name="neighborhoods" tabindex="0" onchange="updateRestaurants()">
