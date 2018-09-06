@@ -71,7 +71,7 @@ nav h1 a {
 #breadcrumb {
     padding: 10px 40px 16px;
     list-style: none;
-    background-color: #eee;
+  
     font-size: 17px;
     margin: 0;
     width: calc(50% - 80px);
@@ -80,6 +80,7 @@ nav h1 a {
 /* Display list items side by side */
 #breadcrumb li {
     display: inline;
+    color: #fff;
 }
 
 /* Add a slash symbol (/) before/behind each list item */
@@ -194,7 +195,7 @@ nav h1 a {
   text-align: center;
   display:flex;
   flex-wrap: wrap;
-
+  justify-content: center;
 }
 
 
@@ -255,17 +256,15 @@ nav h1 a {
 .inside #map-container {
   background: blue none repeat scroll 0 0;
   height: 100%;
-  width:100%; 
   position: fixed;
   right: 0;
-  top: 80px;
+  top: 1px;
   width: 50%;
+ 
 }
 .inside #map {
   background-color: #fff;
-  height: 90%;
- 
-  
+  height: 100%;
 }
 .inside #footer {
   bottom: 0;

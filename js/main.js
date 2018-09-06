@@ -176,7 +176,7 @@ createRestaurantHTML = (restaurant) => {
   const image = document.createElement('img');
   const source = document.createElement('source');
   image.className = 'restaurant-img';
-  image.alt= restaurant.name;
+  image.alt= restaurant.name + ' Restaurant';
   image.src=DBHelper.imageUrlForRestaurant(restaurant);
   let imgpath = DBHelper.imageUrlForRestaurant(restaurant).split('/');
   var msrc=imgpath[3].charAt(0);
@@ -184,7 +184,7 @@ createRestaurantHTML = (restaurant) => {
   
   li.appendChild(image);
  
-  const name = document.createElement('h1');
+  const name = document.createElement('h3');
   name.innerHTML = restaurant.name;
   li.append(name);
 

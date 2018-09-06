@@ -3,7 +3,7 @@
 {
   "name": "Restaurant App",
   "short_name": "restaurant",
-  "theme_color": "#fff",
+  "theme_color": "#2196f3",
   "background_color": "#2196f3",
   "display": "standalone",
   "Scope": "/",

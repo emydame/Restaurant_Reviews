@@ -8,8 +8,8 @@
   <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
  
   <!-- Main CSS file -->
-  <link rel="stylesheet" href="css/styles.css" type="text/css">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ==" crossorigin=""/>
+  <link rel="preload" as style  href="css/styles.css" type="text/css" 'media="print"> 
+  <link rel="preload" as style  href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ==" crossorigin=""/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" charset="utf-8">
   <meta name="theme-color" content="#ffff"/>  
 
@@ -29,7 +29,7 @@
 <!-- Beginning header -->
 <header>
     <!-- Beginning nav -->
-    <nav>
+    <nav id="breadcrumb" role="navigation" aria-label="Breadcrumb">
       <h1><a href="/">Restaurant Reviews</a></h1>
     </nav>
     <ul id="breadcrumb" >
@@ -44,7 +44,7 @@
 
       <!-- Beginning map-->
       <section id="map-container">
-          <div id="map" aria-label="Map with location to restaurants"></div>
+          <div id="map" role="application" aria-label="Map with location to restaurants"></div>
         </section>
         <!-- End map -->
     
@@ -52,7 +52,7 @@
     
    
           <section id="restaurant-container">
-      <h1 id="restaurant-name"></h1>
+      <h2 id="restaurant-name"></h2>
       <img id="restaurant-img">
       <p id="restaurant-cuisine"></p>
       <p id="restaurant-address"></p>
