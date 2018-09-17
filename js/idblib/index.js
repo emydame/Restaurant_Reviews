@@ -1,3 +1,5 @@
-import idb from 'idb';
 
-idb.open("restaurantdb", "v1");
+
+idb.open("restaurantdb",1, upgradeDB =>{
+    let keyvaluStore= upgradeDB.createObjectStore('keyval');
+});

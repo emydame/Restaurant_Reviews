@@ -2,33 +2,52 @@
  * Common database helper functions.
  */
 class DBHelper {
-
+  
   /**
    * Database URL.
    * Change this to restaurants.json file location on your server.
    */
+
+  
   static get DATABASE_URL() {
-    const port = 8000 // Change this to your server port
-    return `http://localhost:${port}/data/restaurants.json`;
+    
+       
+      const port = 1337 // Change this to your server port
+   // return `http://localhost:${port}/data/restaurants.json`;
+   return `http://localhost:${port}/restaurants`;
+
+  
   }
 
   /**
    * Fetch all restaurants.
    */
   static fetchRestaurants(callback) {
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET', DBHelper.DATABASE_URL);
-    xhr.onload = () => {
-      if (xhr.status === 200) { // Got a success response from server!
-        const json = JSON.parse(xhr.responseText);
-        const restaurants = json.restaurants;
-        callback(null, restaurants);
-      } else { // Oops!. Got an error from server.
-        const error = (`Request failed. Returned status of ${xhr.status}`);
-        callback(error, null);
-      }
-    };
-    xhr.send();
+    const dbPromise =idb.open('restaurant-store', 1, upgradeDB => {
+      upgradeDB.createObjectStore('restaurants',{
+        keyPath:'id'
+      });
+    });    
+    fetch(DBHelper.DATABASE_URL).then((response) => response.json()) 
+    .then((restaurants)=> {
+      restaurants.forEach(element => {
+        dbPromise.then(db => {
+          const tx = db.transaction('restaurants', 'readwrite');
+          tx.objectStore('restaurants').put(element);
+          tx.complete;
+        });
+        
+    });
+    
+  } )
+    .catch(e =>{
+      const offlinedata=dbPromise.then(db => {
+        return db.transaction('restaurants')
+          .objectStore('restaurants').getAll();
+      }).then(allObjs => console.log(allObjs));
+      return offlinedata;
+    })
+    
   }
 
   /**
@@ -150,7 +169,7 @@ class DBHelper {
    * Restaurant image URL.
    */
   static imageUrlForRestaurant(restaurant) {
-    return (`/images/img/${restaurant.photograph}`);
+    return (`/images/img/${restaurant.photograph || restaurant.id}.jpg`);
   }
 
   /**

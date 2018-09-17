@@ -1,9 +1,12 @@
 /**
- * serviceworker.js for restaurant review 
+ * sworker.js for restaurant review 
  * Implementation of service worker was guided from udacity instructor video
  * cache-age values obtained from "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control"
  */
 
+
+
+const idPromise=null;
 const restCACHE = "restaurant-cache-v1";
 const urlsToCache = [
   '/',  // include the root
@@ -26,6 +29,7 @@ const urlsToCache = [
 self.addEventListener('install', function(event) {
    
     event.waitUntil(
+        
       caches.open(restCACHE)
         .then(function(cache) {
           console.log('Opened cache');
@@ -36,6 +40,7 @@ self.addEventListener('install', function(event) {
           console.log('Error', error);
         })
     );
+  
   });
 
    /* check if existing cache contains the newly created cache. If
@@ -55,19 +60,23 @@ self.addEventListener('install', function(event) {
           })
         );
       })
-    );
+    );  
+    fetchRestaurants();
     return self.clients.claim();
   });
 
-  
+  function fetchRestaurants()
+  {
+    
+  }
 
   self.addEventListener('fetch', function(event) {
     event.respondWith(
       
-      caches.match(event.request).then(function(resp) {
-        return resp || fetch(event.request).then(function(response) {
+      caches.match(event.request).then(resp => {
+        return resp || fetch(event.request).then(response => {
           let responseClone = response.clone();
-          caches.open(restCACHE).then(function(cache) {
+          caches.open(restCACHE).then(cache => {
             responseClone['Cache-Control']  = 'public, max-age=31536000';
             cache.put(event.request, responseClone);
           });
