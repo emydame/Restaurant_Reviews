@@ -77,7 +77,7 @@ self.addEventListener('install', function(event) {
         return resp || fetch(event.request).then(response => {
           let responseClone = response.clone();
           caches.open(restCACHE).then(cache => {
-            responseClone['Cache-Control']  = 'public, max-age=31536000';
+            responseClone['Cache-Control']  = 'public,max-age=86400';
             cache.put(event.request, responseClone);
           });
           
