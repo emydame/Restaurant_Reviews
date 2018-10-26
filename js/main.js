@@ -5,8 +5,24 @@ var newMap
 var markers = []
 
 
+// Get all of the images that are marked up to lazy load
+const images = document.querySelectorAll('restaurant-img');
+const config = {
+  // If the image gets within 50px in the Y axis, start the download.
+  rootMargin: '50px 0px',
+  threshold: 0.01
+};
 
-
+// If we don't have support for intersection observer, load the images immediately
+if (!('IntersectionObserver' in window)) {
+  Array.from(images).forEach(image => preloadImage(image));
+} else {
+// The observer for the images on the page
+let observer = new IntersectionObserver(onIntersection, config);
+  images.forEach(image => {
+    observer.observe(image);
+  });
+}
 /**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
  */
@@ -170,6 +186,7 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
  * Create restaurant HTML.
  */
 createRestaurantHTML = (restaurant) => {
+  
   const li = document.createElement('li');
   li.setAttribute("role","treeitem");
   li.setAttribute("aria-expanded","true");
