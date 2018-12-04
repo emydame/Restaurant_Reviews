@@ -72,13 +72,16 @@ self.addEventListener('install', function(event) {
 
   self.addEventListener('fetch', function(event) {
     event.respondWith(
-      
+     
+
       caches.match(event.request).then(resp => {
         return resp || fetch(event.request).then(response => {
           let responseClone = response.clone();
+          
           caches.open(restCACHE).then(cache => {
             responseClone['Cache-Control']  = 'public,max-age=86400';
-            cache.put(event.request, responseClone);
+            if(!event.request.method=="POST"){
+            cache.put(event.request, responseClone);}
           });
           
           return response;

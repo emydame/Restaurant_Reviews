@@ -18,45 +18,72 @@ class DBHelper {
 
   
   }
-
   /**
-   * Fetch all restaurants.
+   * 
+Create Index db
    */
-  static fetchRestaurants(callback) {
+  static getIndexDB= (restaurants) =>{
     const dbPromise =idb.open('restaurant-store', 1, upgradeDB => {
       upgradeDB.createObjectStore('restaurants',{
         keyPath:'id'
       });
-    });
-
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET', DBHelper.DATABASE_URL);
-    xhr.onload = () => {
-      if (xhr.status === 200) { // Got a success response from server!
-        const json = JSON.parse(xhr.responseText);
-        const restaurants = json;
-        
-          //put restaurants details into db
-          const restObjAry= Object.keys(restaurants);
-          restObjAry.forEach(element => {
-            dbPromise.then(db => {
-              const tx = db.transaction('restaurants', 'readwrite');
-              tx.objectStore('restaurants').put(restaurants[element]);
-              return tx.complete;
-            });
-          });
-
       
-              
-        callback(null, restaurants);
-      } else { // Oops!. Got an error from server.
-        const error = (`Request failed. Returned status of ${xhr.status}`);
-        
-        callback(error, null);
-      }
-    };
-    xhr.send();
+    });
+    return dbPromise;
   }
+
+  
+   /**
+   * Fetch all restaurants from indexdb
+   */
+static getRestaurantsFromIdb(dbPromise){
+  return DBHelper.getIndexDB().then(dbPromise =>{
+    if(!dbPromise)return;
+    let db= dbPromise.transaction('restaurants')
+        .objectStore('restaurants');
+      return db.getAll();
+      })
+ 
+}
+
+
+  /**
+   * Fetch all restaurants from server
+   */
+  static fetchRestaurantsFromServer() {
+   
+   return fetch(DBHelper.DATABASE_URL).then(restaurants => {return restaurants.json()})
+    .then(restaurants => {console.log('Success:', (restaurants => restaurants.json()))
+    DBHelper.getIndexDB().then(dbPromise =>{  
+    if(!dbPromise)return;
+    restaurants.forEach(element => {
+    let tx = dbPromise.transaction('restaurants', 'readwrite');
+
+    console.log(element);
+      tx.objectStore('restaurants').put(element);
+      return tx.complete;
+    })})
+   return restaurants;
+    })
+    .catch(error => console.error('error:', error))
+}
+
+  static fetchRestaurants(callback) {
+   
+      return DBHelper.getRestaurantsFromIdb().then(
+        restaurants => {if(!(restaurants.length))
+      {
+        return DBHelper.fetchRestaurantsFromServer();
+      }
+      return Promise.resolve(restaurants);
+      }).then(restaurants => {
+        callback(null,restaurants);
+      }).catch(error =>{
+        callback(error, null);
+      });
+      
+  }
+  
 
   /**
    * Fetch a restaurant by its ID.

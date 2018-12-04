@@ -5,24 +5,8 @@ var newMap
 var markers = []
 
 
-// Get all of the images that are marked up to lazy load
-const images = document.querySelectorAll('restaurant-img');
-const config = {
-  // If the image gets within 50px in the Y axis, start the download.
-  rootMargin: '50px 0px',
-  threshold: 0.01
-};
 
-// If we don't have support for intersection observer, load the images immediately
-if (!('IntersectionObserver' in window)) {
-  Array.from(images).forEach(image => preloadImage(image));
-} else {
-// The observer for the images on the page
-let observer = new IntersectionObserver(onIntersection, config);
-  images.forEach(image => {
-    observer.observe(image);
-  });
-}
+
 /**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
  */
@@ -194,10 +178,11 @@ createRestaurantHTML = (restaurant) => {
   const image = document.createElement('img');
   const source = document.createElement('source');
   image.className = 'restaurant-img';
+  image.class='lazy';
   image.alt= restaurant.name + ' Restaurant';
   image.src=DBHelper.imageUrlForRestaurant(restaurant);
   let imgpath = DBHelper.imageUrlForRestaurant(restaurant).split('/');
-  var msrc=imgpath[3].charAt(0);
+  let msrc=imgpath[3].charAt(0);
  image.srcset='/images/'+msrc+'-50pc_large.jpg 900w';
   
   li.appendChild(image);

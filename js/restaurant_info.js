@@ -1,10 +1,110 @@
 let restaurant;
 var newMap;
+var id="";
+
+ /**
+   * 
+Create temp Index db
+   */
+   createTempIDB= (data) =>{
+    const dbPromise =idb.open('tempreview-store', 1, upgradeDB => {
+      upgradeDB.createObjectStore('data',{
+        keyPath:'restaurant_id'
+      });
+     
+    });
+    return dbPromise;
+  }
+
+/**
+ * Create restaurant Reviews and add it to the webpage
+ */
+  fillReview = () => {
+  let reviewtxt = document.getElementById('reviewtext').value.replace(/^\s*|\s*$/g,'');;
+  let reviewer = document.getElementById('reviewerName').value;
+  
+ 
+ 
+  let data = {
+    "restaurant_id": '1',
+    "name": reviewer,
+    "rating": "1",
+    "comments": reviewtxt
+}
+sendReviewtoserver(data);
+  
+}
+
+sendReviewtoserver=(data)=>{
+  const url = 'http://localhost:1337/reviews/';
+  fetch(url, {
+    method: 'POST', // or 'PUT'
+    body: JSON.stringify(data), // data can be `string` or {object}!
+    headers:{
+      'Content-Type': 'application/json'
+    }
+  }).then(res => res.json())
+  .then(response => console.log('Success:', JSON.stringify(response)))
+  .catch(error => {
+  createTempIDB(data).then(dbPromise =>{
+    if(!dbPromise)return;
+      let tx = dbPromise.transaction('data', 'readwrite');
+      tx.objectStore('data').put(data);
+      return tx.complete;
+    
+  }) //save in review db
+  console.error('error:', error)
+}
+
+);
+}
+
+handleConnectionChange = (event) => {
+  
+  // Get Data from indexedDB 
+
+  idb.open('tempreview-store', 1).then(dbPromise => {
+    let db= dbPromise.transaction('data')
+        .objectStore('data');
+       db.getAll().then(tempdata => {
+         sendReviewtoserver(tempdata);
+         tempdata.forEach(element => {
+          let tx = dbPromise.transaction('data', 'readwrite');
+                tx.objectStore('data').delete(element.restaurant_id);
+            return tx.complete;
+          })
+       });
+  })
+}
+
+
+/**
+ * Create reviews box
+ */
+// Get the modal
+const modal = document.getElementById('myModal');
+const reviewBtn = document.getElementById('reviewBtn');
+reviewBtn.onclick=() =>{
+  modal.style.display = "table";
+ 
+}
+//get submit
+const subreviewBtn = document.getElementById('submitRev');
+subreviewBtn.onclick=() =>{ fillReview();}
+// Get the <span> element that closes the modal
+const span = document.getElementsByClassName("close")[0];
+span.onclick = ()=> {  
+  modal.style.display = "none";
+}
+
+
 
 /**
  * Initialize map as soon as the page is loaded.
  */
-document.addEventListener('DOMContentLoaded', (event) => {  
+
+document.addEventListener('DOMContentLoaded', (event) => { 
+  handleConnectionChange(); 
   initMap();
 });
 
@@ -61,7 +161,7 @@ fetchRestaurantFromURL = (callback) => {
     callback(null, self.restaurant)
     return;
   }
-  const id = getParameterByName('id');
+   id = getParameterByName('id');
   if (!id) { // no id found in URL
     error = 'No restaurant id in URL'
     callback(error, null);
@@ -94,7 +194,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   image.alt=restaurant.name + ' Restaurant';
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;
-
+  image.srcset='/images/'+msrc+'-50pc_large.jpg 900w';
   // fill operating hours
   if (restaurant.operating_hours) {
     fillRestaurantHoursHTML();
