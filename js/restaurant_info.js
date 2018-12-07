@@ -1,4 +1,5 @@
 let restaurant;
+let reviews;
 var newMap;
 var id="";
 
@@ -22,13 +23,15 @@ Create temp Index db
   fillReview = () => {
   let reviewtxt = document.getElementById('reviewtext').value.replace(/^\s*|\s*$/g,'');;
   let reviewer = document.getElementById('reviewerName').value;
+  let ratings = document.getElementById('rating').value;
+  
   
  
  
   let data = {
-    "restaurant_id": '1',
+    "restaurant_id": id,
     "name": reviewer,
-    "rating": "1",
+    "rating": ratings,
     "comments": reviewtxt
 }
 sendReviewtoserver(data);
@@ -194,13 +197,23 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   image.alt=restaurant.name + ' Restaurant';
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;
+  let imgpath = DBHelper.imageUrlForRestaurant(restaurant).split('/');
+  let msrc=imgpath[3].charAt(0);
   image.srcset='/images/'+msrc+'-50pc_large.jpg 900w';
   // fill operating hours
   if (restaurant.operating_hours) {
     fillRestaurantHoursHTML();
   }
-  // fill reviews
-  fillReviewsHTML();
+  // fill reviews  
+     DBHelper.fetchRestaurantReviewsById(restaurant.id, (error, reviews) => {
+      self.reviews = reviews;
+      if (!reviews) {
+        console.error(error);
+      }
+      fillReviewsHTML(reviews);
+      
+    })
+ 
 }
 
 /**
@@ -226,7 +239,11 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
 /**
  * Create all reviews HTML and add them to the webpage.
  */
-fillReviewsHTML = (reviews = self.restaurant.reviews) => {
+fillReviewsHTML = (error) => {
+  if(error){
+    console.log("unable to retrieve reviews");
+  }
+  reviews=self.reviews;
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h3');
   title.innerHTML = 'Reviews';
@@ -255,7 +272,7 @@ createReviewHTML = (review) => {
   li.appendChild(name);
 
   const date = document.createElement('p');
-  date.innerHTML = review.date;
+  date.innerHTML = review.createdAt;
   li.appendChild(date);
 
   const rating = document.createElement('p');

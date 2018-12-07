@@ -18,6 +18,15 @@ class DBHelper {
 
   
   }
+
+  static get DATABASE_REVIEWS_URL() {
+    
+       
+    const port = 1337 // Change this to your server port
+  return `http://localhost:${port}/reviews/`;
+
+
+}
   /**
    * 
 Create Index db
@@ -104,6 +113,44 @@ static getRestaurantsFromIdb(dbPromise){
     });
   }
 
+   /**
+   * Fetch all restaurant reviews
+   */
+// http://localhost:1337/reviews/?restaurant_id=<restaurant_id>
+
+static fetchReviewsFromServer(callback) {
+  let url=DBHelper.DATABASE_REVIEWS_URL;//+`?restaurant_id=${id}`;
+    return fetch(url).then(response => {
+      let rev= response.json();
+      rev.then(function(responseValue) {
+        callback(null,responseValue);
+      });     
+     
+    }) .catch(error =>{
+      callback(error, null);
+    });
+ }
+
+/**
+   * Fetch a restaurant review by its ID.
+   */
+  static fetchRestaurantReviewsById(id, callback) {
+    // fetch  restaurants reviews by id with proper error handling.
+      
+   let rev= DBHelper.fetchReviewsFromServer((error,response) =>  {
+      if (error) {
+        console.log('Unable to retrieve reviews');
+      }else{        
+        let reviewsi = response.filter(r => r.restaurant_id === id);
+        console.log(reviewsi);
+        if (reviewsi) { // Got the review
+          callback(null,reviewsi);
+        } else { // Restaurant review does not exist in the database
+          callback('Review does not exist', null);
+        }
+      }
+    });
+  }
   /**
    * Fetch restaurants by a cuisine type with proper error handling.
    */
