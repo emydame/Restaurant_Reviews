@@ -40,8 +40,19 @@ Create Index db
     });
     return dbPromise;
   }
-
-  
+/**
+   * 
+  Create Index db for reviews
+   */
+  static getIndexDBForReviews= (restaurants) =>{
+    const dbPromise =idb.open('reviews-store', 1, upgradeDB => {
+      upgradeDB.createObjectStore('reviews',{
+        keyPath:'restaurant_id'
+      });
+      
+    });
+    return dbPromise;
+  }
    /**
    * Fetch all restaurants from indexdb
    */
@@ -92,8 +103,6 @@ static getRestaurantsFromIdb(dbPromise){
       });
       
   }
-  
-
   /**
    * Fetch a restaurant by its ID.
    */
@@ -113,13 +122,46 @@ static getRestaurantsFromIdb(dbPromise){
     });
   }
 
+    /**
+   * Fetch all restaurants from indexdb
+   */
+static getReviewsFromIdb(dbPromise,id){
+  return DBHelper.getIndexDB().then(dbPromise =>{
+    if(!dbPromise)return;
+    let db= dbPromise.transaction('reviews')
+        .objectStore('reviews').get(id);
+       }).then(obj => {return obj});
+ 
+}
+  static fetchReviewsbyid(id,callback){
+    DBHelper.getIndexDBForReviews().then(dbPromise =>{  
+      if(!dbPromise)return;// check if idb review store exist
+      else{
+    return DBHelper.getReviewsFromIdb(id).then(
+      reviews => {if(!(reviews.length))   //if review does not exist for the id provided, fetch from server
+    {
+      return DBHelper.fetchReviewsFromServerbyid();// fetch review from server
+    }
+    return Promise.resolve(reviews);
+    }).then(reviews => {
+      callback(null,reviews);
+    }).catch(error =>{
+      callback(error, null);
+    });
+  }}
+)
+}
+  
+
+  
+
    /**
    * Fetch all restaurant reviews
    */
 // http://localhost:1337/reviews/?restaurant_id=<restaurant_id>
 
-static fetchReviewsFromServer(callback) {
-  let url=DBHelper.DATABASE_REVIEWS_URL;//+`?restaurant_id=${id}`;
+static fetchallReviewsFromServer(callback) {
+  let url=DBHelper.DATABASE_REVIEWS_URL;   //+`?restaurant_id=${id}`;
     return fetch(url).then(response => {
       let rev= response.json();
       rev.then(function(responseValue) {
@@ -131,10 +173,12 @@ static fetchReviewsFromServer(callback) {
     });
  }
 
+
+ 
 /**
    * Fetch a restaurant review by its ID.
    */
-  static fetchRestaurantReviewsById(id, callback) {
+  static oldfetchRestaurantReviewsById(id, callback) {
     // fetch  restaurants reviews by id with proper error handling.
       
    let rev= DBHelper.fetchReviewsFromServer((error,response) =>  {
@@ -151,6 +195,32 @@ static fetchReviewsFromServer(callback) {
       }
     });
   }
+
+  static fetchReviewsFromServerbyid(id,callback) {
+    let url=DBHelper.DATABASE_REVIEWS_URL+'?restaurant_id=1';   //`?restaurant_id=${id}`;
+      return fetch(url).then(response => {
+        let rev= response.json();
+        rev.then(function(responseValue) {
+          if(responseValue.length){
+            //save reviews to temp db.
+            DBHelper.getIndexDBForReviews().then(dbPromise =>{  
+              if(!dbPromise)return;
+              responseValue.forEach(element => {
+              let tx = dbPromise.transaction('reviews', 'readwrite');
+          
+              console.log(element);
+                tx.objectStore('reviews').put(element);
+                 tx.complete;
+              })})
+          }
+          callback(null,responseValue);
+        });     
+       
+      }) .catch(error =>{
+        callback(error, null);
+      });
+   }
+
   /**
    * Fetch restaurants by a cuisine type with proper error handling.
    */

@@ -1,7 +1,7 @@
 let restaurant;
 let reviews;
 var newMap;
-var id="";
+var id;
 
  /**
    * 
@@ -23,9 +23,7 @@ Create temp Index db
   fillReview = () => {
   let reviewtxt = document.getElementById('reviewtext').value.replace(/^\s*|\s*$/g,'');;
   let reviewer = document.getElementById('reviewerName').value;
-  let ratings = document.getElementById('rating').value;
-  
-  
+  let ratings = document.getElementById('rating').value; 
  
  
   let data = {
@@ -86,11 +84,13 @@ handleConnectionChange = (event) => {
  */
 // Get the modal
 const modal = document.getElementById('myModal');
-const reviewBtn = document.getElementById('reviewBtn');
-reviewBtn.onclick=() =>{
-  modal.style.display = "table";
- 
-}
+if (modal.style.display === "none") {
+  modal.style.display = "block";
+  } else {
+    modal.style.display = "none";
+  }
+
+
 //get submit
 const subreviewBtn = document.getElementById('submitRev');
 subreviewBtn.onclick=() =>{ fillReview();}
@@ -107,6 +107,7 @@ span.onclick = ()=> {
  */
 
 document.addEventListener('DOMContentLoaded', (event) => { 
+  modal.style.display = "none";
   handleConnectionChange(); 
   initMap();
 });
@@ -205,7 +206,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
     fillRestaurantHoursHTML();
   }
   // fill reviews  
-     DBHelper.fetchRestaurantReviewsById(restaurant.id, (error, reviews) => {
+     DBHelper.fetchReviewsbyid(restaurant.id, (error, reviews) => {
       self.reviews = reviews;
       if (!reviews) {
         console.error(error);
@@ -247,7 +248,16 @@ fillReviewsHTML = (error) => {
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h3');
   title.innerHTML = 'Reviews';
+  const newreviewbtn = document.createElement('a');
+  newreviewbtn.id='reviewBtn';
+  newreviewbtn.innerHTML='Add Review';
+  newreviewbtn.innerHTML.fontcolor='blue';
+    newreviewbtn.onclick=() =>{
+  modal.style.display = "table";
+ 
+}
   container.appendChild(title);
+  container.appendChild(newreviewbtn);
 
   if (!reviews) {
     const noReviews = document.createElement('p');
