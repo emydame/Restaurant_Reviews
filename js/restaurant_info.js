@@ -206,7 +206,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
     fillRestaurantHoursHTML();
   }
   // fill reviews  
-     DBHelper.fetchReviewsbyid(restaurant.id, (error, reviews) => {
+     DBHelper.fetchReviewsFromServerbyid(restaurant.id, (error, reviews) => {
       self.reviews = reviews;
       if (!reviews) {
         console.error(error);
@@ -248,7 +248,7 @@ fillReviewsHTML = (error) => {
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h3');
   title.innerHTML = 'Reviews';
-  const newreviewbtn = document.createElement('a');
+  const newreviewbtn = document.createElement('button');
   newreviewbtn.id='reviewBtn';
   newreviewbtn.innerHTML='Add Review';
   newreviewbtn.innerHTML.fontcolor='blue';

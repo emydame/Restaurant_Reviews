@@ -40,19 +40,8 @@ Create Index db
     });
     return dbPromise;
   }
-/**
-   * 
-  Create Index db for reviews
-   */
-  static getIndexDBForReviews= (restaurants) =>{
-    const dbPromise =idb.open('reviews-store', 1, upgradeDB => {
-      upgradeDB.createObjectStore('reviews',{
-        keyPath:'restaurant_id'
-      });
-      
-    });
-    return dbPromise;
-  }
+
+  
    /**
    * Fetch all restaurants from indexdb
    */
@@ -103,6 +92,8 @@ static getRestaurantsFromIdb(dbPromise){
       });
       
   }
+  
+
   /**
    * Fetch a restaurant by its ID.
    */
@@ -121,39 +112,6 @@ static getRestaurantsFromIdb(dbPromise){
       }
     });
   }
-
-    /**
-   * Fetch all restaurants from indexdb
-   */
-static getReviewsFromIdb(dbPromise,id){
-  return DBHelper.getIndexDB().then(dbPromise =>{
-    if(!dbPromise)return;
-    let db= dbPromise.transaction('reviews')
-        .objectStore('reviews').get(id);
-       }).then(obj => {return obj});
- 
-}
-  static fetchReviewsbyid(id,callback){
-    DBHelper.getIndexDBForReviews().then(dbPromise =>{  
-      if(!dbPromise)return;// check if idb review store exist
-      else{
-    return DBHelper.getReviewsFromIdb(id).then(
-      reviews => {if(!(reviews.length))   //if review does not exist for the id provided, fetch from server
-    {
-      return DBHelper.fetchReviewsFromServerbyid();// fetch review from server
-    }
-    return Promise.resolve(reviews);
-    }).then(reviews => {
-      callback(null,reviews);
-    }).catch(error =>{
-      callback(error, null);
-    });
-  }}
-)
-}
-  
-
-  
 
    /**
    * Fetch all restaurant reviews
@@ -197,22 +155,10 @@ static fetchallReviewsFromServer(callback) {
   }
 
   static fetchReviewsFromServerbyid(id,callback) {
-    let url=DBHelper.DATABASE_REVIEWS_URL+'?restaurant_id=1';   //`?restaurant_id=${id}`;
+    let url=DBHelper.DATABASE_REVIEWS_URL+'?restaurant_id='+id;   //`?restaurant_id=${id}`;
       return fetch(url).then(response => {
         let rev= response.json();
         rev.then(function(responseValue) {
-          if(responseValue.length){
-            //save reviews to temp db.
-            DBHelper.getIndexDBForReviews().then(dbPromise =>{  
-              if(!dbPromise)return;
-              responseValue.forEach(element => {
-              let tx = dbPromise.transaction('reviews', 'readwrite');
-          
-              console.log(element);
-                tx.objectStore('reviews').put(element);
-                 tx.complete;
-              })})
-          }
           callback(null,responseValue);
         });     
        
@@ -352,5 +298,46 @@ static fetchallReviewsFromServer(callback) {
     return marker;
   } */
 
+/**
+ * 
+ * Mark Restaurant as favorite
+ */
+/**
+ * get favorite restaurants
+ */
+static getFavRestaurants(callback){
+  const url="http://localhost:1337/restaurants/?is_favorite=true"
+  fetch(url).then(response => {
+    let isFav=response.json();
+    isFav.then(function(responseValue) {
+      callback(null,responseValue);
+    });     
+   
+  }).catch(error =>{
+    callback(error,null);
+  })
+}
+
+static checkifRestaurantisFav(id,callback) {
+  // Fetch all restaurants that are favorites
+  DBHelper.getFavRestaurants((error, restaurants) => {
+    if (error) {
+      callback(error, null);
+    } else {
+      // filter result by restaurant-id
+      const favRestaurants =  restaurants.filter(r => r.id == id);
+      callback(null, favRestaurants);
+    }
+  });
+}
+
+
+
+static sendFavoritetoserver=(id,state)=>{
+  const url = 'http://localhost:1337/restaurants/'+2+'/?is_favorite='+state;
+  fetch(url, {
+    method: 'PUT'   
+  });
+}
 }
 
