@@ -13,8 +13,8 @@ class DBHelper {
     
        
       const port = 1337 // Change this to your server port
-   // return `http://localhost:${port}/data/restaurants.json`;
-   return `http://localhost:${port}/restaurants`;
+    return `https://emydame.github.io/Restaurant_Reviews/data/restaurants.json`;
+   //return `http://localhost:${port}/restaurants`;
 
   
   }
